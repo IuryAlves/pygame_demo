@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 
-try:
-    import pygame
-except ImportError:
-    print("The pygame is not instaled")
-
+import pygame
 from pygame.locals import *
 from pygame.sprite import Sprite
 from colors import *
@@ -82,7 +78,7 @@ class Hero(Characters):
         Characters.__init__(self, start_px, start_py, image_name, *groups)
 
 
-class Npcs(Characters):
+class Npc(Characters):
 
     '''
     Class for all the npcs of the game

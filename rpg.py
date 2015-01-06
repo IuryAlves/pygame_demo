@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
 
-from config import *
-from Classes import *
-from colors import *
 import sys
+from __init__ import *
+import pygame
+from characters import Hero, Npc
+from text import Text
+from colors import *
 from pygame.sprite import Sprite, RenderUpdates
+from pygame.constants import *
 
-FPS = 16
-
-
-# mover personagem para baixo
-
-
-#=======================
 
 def main():
     fundo, tela, clock = config()
     musica = pygame.mixer.Sound("BGM/Firelink Shrine.wav")
     grupo = RenderUpdates()
     personagem = Hero(20, 290, "dante", grupo)
-    pygame.font.init()
     frase = Text(40, 'Quem eh voce e oque faz aqui?', 'carolingia.ttf')
 
     lx = [b for b in range(-4, 76)]
