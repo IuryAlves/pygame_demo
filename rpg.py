@@ -4,26 +4,27 @@ import sys
 from __init__ import *
 import pygame
 from characters import Hero, Npc
+from tiles import Tile
 from text import Text
 from colors import *
-from pygame.sprite import Sprite, RenderUpdates
+from pygame.sprite import Sprite, RenderUpdates, LayeredUpdates
 from pygame.constants import *
 
 
 def main():
     fundo, tela, clock = config()
     musica = pygame.mixer.Sound("BGM/Firelink Shrine.wav")
-    grupo = RenderUpdates()
+    grupo = LayeredUpdates()
+    tiles_group = LayeredUpdates()
     personagem = Hero(20, 290, "dante", grupo)
     frase = Text(40, 'Quem eh voce e oque faz aqui?', 'carolingia.ttf')
+    Tile(30, 30, "g.PNG", tiles_group)
 
     lx = [b for b in range(-4, 76)]
     l1 = [-10]
     l2 = [6]
 
     parede = [x for x in range(-10, 16)]
-
-    iniciarConversa = [43, 0]
 
     teclas = {K_LEFT: False, K_RIGHT: False, K_UP: False, K_DOWN: False,
               K_RETURN: False, 27: False}  # obs 27 = tecla 'esc'
@@ -45,20 +46,18 @@ def main():
 
         if teclas[K_LEFT]:
             personagem.move("LEFT")
-        if teclas[K_RIGHT]:
+        elif teclas[K_RIGHT]:
             personagem.move("RIGHT")
-        if teclas[K_UP]:
+        elif teclas[K_UP]:
             personagem.move("UP")
-        if teclas[K_DOWN]:
+        elif teclas[K_DOWN]:
             personagem.move("DOWN")
-
-        if personagem.px == iniciarConversa[0] and personagem.py == iniciarConversa[1]:
-            tela.blit(frase.frases, (200, 500))
-            pygame.display.flip()
 
         #print(personagem.px, personagem.py)
 
         grupo.clear(tela, fundo)
+        tiles_group.clear(tela, fundo)
+        pygame.display.update(tiles_group.draw(tela))
         pygame.display.update(grupo.draw(tela))
 
 
