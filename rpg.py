@@ -17,8 +17,6 @@ def main():
     grupo = LayeredUpdates()
     tiles_group = LayeredUpdates()
     personagem = Hero(20, 290, "dante", grupo)
-    frase = Text(40, 'Quem eh voce e oque faz aqui?', 'carolingia.ttf')
-    Tile(30, 30, "g.PNG", tiles_group)
 
     lx = [b for b in range(-4, 76)]
     l1 = [-10]
@@ -44,6 +42,7 @@ def main():
             pygame.quit()
             sys.exit()
 
+        #if {personagem.px, personagem.py} & set(parede):
         if teclas[K_LEFT]:
             personagem.move("LEFT")
         elif teclas[K_RIGHT]:
@@ -53,7 +52,7 @@ def main():
         elif teclas[K_DOWN]:
             personagem.move("DOWN")
 
-        #print(personagem.px, personagem.py)
+        print(personagem.px, personagem.py, parede)
 
         grupo.clear(tela, fundo)
         tiles_group.clear(tela, fundo)
