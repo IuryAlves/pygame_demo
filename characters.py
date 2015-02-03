@@ -21,9 +21,8 @@ class Characters(Sprite):
         self.start_py = start_py
         self.px = 0
         self.py = 0
+        self.yVel = 0
         self.jumping = False
-        self.frame_since_collision = 0
-        self.frame_since_jump = 0
         self._move_states = {"LEFT": 0, "RIGHT": 0, "UP": 0, "DOWN": 0}
         self.rect = Rect(self.start_px, self.start_py, 0, 0)
         self._base_image_path = "sprites/"
@@ -34,27 +33,34 @@ class Characters(Sprite):
         pygame.draw.rect(self.image, BLACK, self)
 
     def jump(self):
-    	self.jumping = True
-    	self.frame_since_jump = 0
-    	#side_state = str(self._move_states["UP"] + 1)
+        self.yVel = -15
+        self.jumping = True
 
-    	# for a in range(1, 5):
-    	# 	image = "%s%s_jump_%s.png" %(self._base_image_path, self.image_name, a)
-    	# 	self.image = pygame.image.load(image)
-    	# 	self.convert_image()
-    	# 	self.py -= 10
-    	# 	self.rect.move_ip(0, self.py)
-    	# 	time.sleep(0.5)
-    	# 	print image
+    def is_jumping(self, gravity):
+        return
+        if self.jumping:
+            print self.py
 
+            self.yVel += gravity
+            self.py += self.yVel
+            self.rect.move_ip(self.px, self.py)
+            if self.yVel < 0:
+                self.py -= self.yVel
+                if self.py > 50:
+                    self.py = 0
+                    self.jumping = False
+                # if self.py <= 0:
+                #     self.jumping = False
+            #     if self.py <= -15:
+            #         self.jumping = False
 
     def move(self, side):
         '''
         move the character
         '''
         side_state = str(self._move_states[side] + 1)
-        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, side.lower(), side_state) 
-        
+        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, side.lower(), side_state)
+
         self.image = pygame.image.load(image)
 
         time.sleep(0.075)
