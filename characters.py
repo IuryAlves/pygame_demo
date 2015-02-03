@@ -23,7 +23,10 @@ class Characters(Sprite):
         self.py = 0
         self.yVel = 0
         self.jumping = False
-        self._move_states = {"LEFT": 0, "RIGHT": 0, "UP": 0, "DOWN": 0}
+        self.attacking  = False
+        self.actual_side = "RIGHT"
+        self._attack_state = {"right": 0, "left": 0}
+        self._move_states = {"right": 0, "left": 0}
         self.rect = Rect(self.start_px, self.start_py, 0, 0)
         self._base_image_path = "sprites/"
         self.image_name = image_name
@@ -58,22 +61,37 @@ class Characters(Sprite):
         '''
         move the character
         '''
+        self.actual_side = side
         side_state = str(self._move_states[side] + 1)
-        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, side.lower(), side_state)
+        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, side_state)
 
         self.image = pygame.image.load(image)
 
         time.sleep(0.075)
         self._change_state(side)
 
+    def attack(self):
+    	self.attacking = True
+
+    def animate_attack(self):
+    	self._attack_state[self.actual_side] +=1
+    	image = "%s%s_attack_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, self._attack_state[self.actual_side])
+    	self.image = pygame.image.load(image)
+    	self.convert_image()
+    	if self._attack_state[self.actual_side] == 5:
+    		self._attack_state[self.actual_side] = 0
+    		self.attacking = False
+    		self.image = pygame.image.load("%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, 0))
+    		self.convert_image()
+
     def _change_state(self, side):
         '''
         change the position of the character in the screen
         '''
         self.convert_image()
-        if side == 'LEFT':
+        if side == 'left':
             x, y = -10, 0
-        if side == 'RIGHT':
+        if side == 'right':
             x, y = 10, 0
         if side == 'DOWN':
             x, y = 0, 10
