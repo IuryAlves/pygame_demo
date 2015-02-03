@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import pygame
+import time
 from pygame.locals import *
 from pygame.sprite import Sprite
 from colors import *
@@ -14,29 +15,49 @@ class Characters(Sprite):
     Base class for all characters of the game
     '''
 
-    def __init__(self, start_px, start_py, image_name, *groups):
+    def __init__(self, start_px, start_py, image_name="elisa", *groups):
         Sprite.__init__(self, *groups)
         self.start_px = start_px
         self.start_py = start_py
         self.px = 0
         self.py = 0
+        self.jumping = False
+        self.frame_since_collision = 0
+        self.frame_since_jump = 0
         self._move_states = {"LEFT": 0, "RIGHT": 0, "UP": 0, "DOWN": 0}
         self.rect = Rect(self.start_px, self.start_py, 0, 0)
         self._base_image_path = "sprites/"
         self.image_name = image_name
         self.image = pygame.image.load(
-            self._base_image_path + image_name + "RIGHT1.png")
+            self._base_image_path + image_name + "_right_0.png")
         self.convert_image()
         pygame.draw.rect(self.image, BLACK, self)
+
+    def jump(self):
+    	self.jumping = True
+    	self.frame_since_jump = 0
+    	#side_state = str(self._move_states["UP"] + 1)
+
+    	# for a in range(1, 5):
+    	# 	image = "%s%s_jump_%s.png" %(self._base_image_path, self.image_name, a)
+    	# 	self.image = pygame.image.load(image)
+    	# 	self.convert_image()
+    	# 	self.py -= 10
+    	# 	self.rect.move_ip(0, self.py)
+    	# 	time.sleep(0.5)
+    	# 	print image
+
 
     def move(self, side):
         '''
         move the character
         '''
         side_state = str(self._move_states[side] + 1)
-        self.image = pygame.image.load(
-            self._base_image_path + self.image_name + side + side_state + ".png")
+        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, side.lower(), side_state) 
+        
+        self.image = pygame.image.load(image)
 
+        time.sleep(0.075)
         self._change_state(side)
 
     def _change_state(self, side):
@@ -48,8 +69,6 @@ class Characters(Sprite):
             x, y = -10, 0
         if side == 'RIGHT':
             x, y = 10, 0
-        if side == 'UP':
-            x, y = 0, -10
         if side == 'DOWN':
             x, y = 0, 10
         self.rect.move_ip(x, y)
@@ -57,7 +76,7 @@ class Characters(Sprite):
         self.py += y
 
         self._move_states[side] += 1
-        if self._move_states[side] > 2:
+        if self._move_states[side] == 8:
             self._move_states[side] = 0
 
     def convert_image(self):

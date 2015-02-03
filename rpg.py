@@ -13,10 +13,8 @@ from pygame.constants import *
 
 def main():
     fundo, tela, clock = config()
-    musica = pygame.mixer.Sound("BGM/Firelink Shrine.wav")
     grupo = LayeredUpdates()
-    tiles_group = LayeredUpdates()
-    personagem = Hero(20, 290, "dante", grupo)
+    personagem = Hero(20, 290,"elisa", grupo)
 
     lx = [b for b in range(-4, 76)]
     l1 = [-10]
@@ -27,7 +25,6 @@ def main():
     teclas = {K_LEFT: False, K_RIGHT: False, K_UP: False, K_DOWN: False,
               K_RETURN: False, 27: False}  # obs 27 = tecla 'esc'
 
-    musica.play()
     fundo = fundo.convert()
     pygame.display.flip()
     while True:
@@ -41,22 +38,23 @@ def main():
         if teclas[27]:  # tecla ESC
             pygame.quit()
             sys.exit()
-
+        personagem.py += .27
         #if {personagem.px, personagem.py} & set(parede):
         if teclas[K_LEFT]:
             personagem.move("LEFT")
         elif teclas[K_RIGHT]:
             personagem.move("RIGHT")
         elif teclas[K_UP]:
-            personagem.move("UP")
+            personagem.jump()
         elif teclas[K_DOWN]:
             personagem.move("DOWN")
-
-        print(personagem.px, personagem.py, parede)
+            if personagem.frame_since_collision < 6 and personagem.frame_since_jump < 6:
+            	personagem.frame_since_jump = 100
+            	personagem.py -= 8
+            	personagem.frame_since_collision += 3
+            	personagem.frame_since_jump += 3
 
         grupo.clear(tela, fundo)
-        tiles_group.clear(tela, fundo)
-        pygame.display.update(tiles_group.draw(tela))
         pygame.display.update(grupo.draw(tela))
 
 

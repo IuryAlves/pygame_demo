@@ -1,6 +1,6 @@
 screen_size_x: 800
 screen_size_y: 600
-name: "pygame rpg"
+name: "demo rpg"
 fps: 16
-initial_game_image: "imagens/cenario2.png"
+initial_game_image: "cenario.png"
 tile_area: 4
