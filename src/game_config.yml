@@ -1,0 +1,6 @@
+screen_size_x: 800
+screen_size_y: 600
+name: "demo rpg"
+fps: 16
+initial_game_level: "src/levels/level1.tmx"
+image_path: "sprites"

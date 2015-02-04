@@ -6,8 +6,6 @@ from pygame.locals import *
 from pygame.sprite import Sprite
 from colors import *
 
-# All classes of the game are here
-
 
 class Characters(Sprite):
 
@@ -15,29 +13,32 @@ class Characters(Sprite):
     Base class for all characters of the game
     '''
 
-    def __init__(self, start_px, start_py, image_name="elisa", *groups):
+    def __init__(self, start_px, start_py, image_name, *groups):
         Sprite.__init__(self, *groups)
-        self.start_px = start_px
-        self.start_py = start_py
-        self.px = 0
-        self.py = 0
+        self.px = start_px
+        self.py = start_py
         self.yVel = 0
         self.jumping = False
         self.attacking  = False
         self.actual_side = "RIGHT"
         self._attack_state = {"right": 0, "left": 0}
         self._move_states = {"right": 0, "left": 0}
-        self.rect = Rect(self.start_px, self.start_py, 0, 0)
-        self._base_image_path = "sprites/"
+        self.rect = Rect(self.px, self.py, 0, 0)
+        self._base_image_path = "src/sprites/"
         self.image_name = image_name
-        self.image = pygame.image.load(
-            self._base_image_path + image_name + "_right_0.png")
+        self.image = self._scale_2x(pygame.image.load(self._base_image_path + image_name + "_right_0.png"))
         self.convert_image()
         pygame.draw.rect(self.image, BLACK, self)
+
+    def _scale_2x(self, surface):
+    	return pygame.transform.scale2x(surface)
 
     def jump(self):
         self.yVel = -15
         self.jumping = True
+
+    def get_down(self):
+    	pass
 
     def is_jumping(self, gravity):
         return
@@ -52,20 +53,16 @@ class Characters(Sprite):
                 if self.py > 50:
                     self.py = 0
                     self.jumping = False
-                # if self.py <= 0:
-                #     self.jumping = False
-            #     if self.py <= -15:
-            #         self.jumping = False
 
     def move(self, side):
         '''
         move the character
         '''
         self.actual_side = side
-        side_state = str(self._move_states[side] + 1)
-        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, side_state)
+        self._move_states[side] += 1
+        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, self._move_states[side])
 
-        self.image = pygame.image.load(image)
+        self.image = self._scale_2x(pygame.image.load(image))
 
         time.sleep(0.075)
         self._change_state(side)
@@ -76,12 +73,12 @@ class Characters(Sprite):
     def animate_attack(self):
     	self._attack_state[self.actual_side] +=1
     	image = "%s%s_attack_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, self._attack_state[self.actual_side])
-    	self.image = pygame.image.load(image)
+    	self.image = self._scale_2x(pygame.image.load(image))
     	self.convert_image()
     	if self._attack_state[self.actual_side] == 5:
     		self._attack_state[self.actual_side] = 0
     		self.attacking = False
-    		self.image = pygame.image.load("%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, 0))
+    		self.image = self._scale_2x(pygame.image.load("%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, 0)))
     		self.convert_image()
 
     def _change_state(self, side):
@@ -93,8 +90,6 @@ class Characters(Sprite):
             x, y = -10, 0
         if side == 'right':
             x, y = 10, 0
-        if side == 'DOWN':
-            x, y = 0, 10
         self.rect.move_ip(x, y)
         self.px += x
         self.py += y
@@ -111,23 +106,7 @@ class Characters(Sprite):
         self.image.convert()
         self.image.set_colorkey(MAGENTA, RLEACCEL)
 
-
 class Hero(Characters):
 
-    '''
-    Class for the heroes of the game
-    '''
-
-    def __init__(self, start_px, start_py, image_name, *groups):
-        Characters.__init__(self, start_px, start_py, image_name, *groups)
-
-
-class Npc(Characters):
-
-    '''
-    Class for all the npcs of the game
-    npcs = all characters that you can interact
-    '''
-
-    def __init__(self, start_px, start_py, image_name, *groups):
-        Characters.__init__(self, start_px, start_py, *groups)
+	def __init__(self, *args, **kwargs):
+		super(Hero, self).__init__(*args, **kwargs)
