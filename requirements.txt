@@ -1,1 +1,2 @@
 pytmx
+hg+http://bitbucket.org/pygame/pygame
