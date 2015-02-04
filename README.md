@@ -1,3 +1,3 @@
 ## Demo game developed with pygame 
 
-![](images/example.png)
+![](src/images/example.png)
