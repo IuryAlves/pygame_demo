@@ -18,7 +18,7 @@ class Characters(Sprite):
         Sprite.__init__(self, *groups)
         self.px = start_px
         self.py = start_py
-        self.yVel = 0
+        self.yVel = -15
         self.states = {
               "stand_still": self.stand_still,
               "move": self.move,
@@ -60,25 +60,20 @@ class Characters(Sprite):
 
 
     def jump(self):
-        self.yVel = -15
-        self.jumping = True
-
-    def get_down(self):
-        pass
-
-    def is_jumping(self, gravity):
-        return
-        # if self.jumping:
-        #     print self.py
-        #
-        #     self.yVel += gravity
-        #     self.py += self.yVel
-        #     self.rect.move_ip(self.px, self.py)
-        #     if self.yVel < 0:
+        self.yVel += 1.2
+        print self.yVel
+        self.py -= self.yVel
+        self.rect.move_ip(0, self.yVel)
+        self.convert_image()
+        #self.fsm.set_state("stand_still")
+        #if self.yVel < 0:
         #         self.py -= self.yVel
         #         if self.py > 50:
         #             self.py = 0
-        #             self.jumping = False
+
+    def get_down(self):
+        raise NotImplementedError
+
 
     def attack(self):
         attack_count = self.fsm.attack_count
