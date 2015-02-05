@@ -4,3 +4,4 @@ name: "demo rpg"
 fps: 16
 initial_game_level: "src/levels/level1.tmx"
 image_path: "sprites"
+

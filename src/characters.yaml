@@ -1,0 +1,26 @@
+hero_images:
+  attack:
+    - attack_0.png
+    - attack_1.png
+    - attack_2.png
+    - attack_3.png
+    - attack_4.png
+    - attack_5.png
+  jump:
+    - jump_1.png
+    - jump_2.png
+    - jump_3.png
+    - jump_4.png
+  move:
+    - move_1.png
+    - move_2.png
+    - move_3.png
+    - move_4.png
+    - move_5.png
+    - move_6.png
+    - move_7.png
+    - move_8.png
+  stand_still:
+    - stand_still.png
+  get_down:
+    - jump_1.png

@@ -2,101 +2,103 @@
 
 import pygame
 import time
+import config
+from fsm import Fsm
 from pygame.locals import *
 from pygame.sprite import Sprite
 from colors import *
 
 
 class Characters(Sprite):
-
-    '''
+    """"
     Base class for all characters of the game
-    '''
+    """
 
-    def __init__(self, start_px, start_py, image_name, *groups):
+    def __init__(self, start_px, start_py, *groups):
         Sprite.__init__(self, *groups)
         self.px = start_px
         self.py = start_py
         self.yVel = 0
-        self.jumping = False
-        self.attacking  = False
-        self.actual_side = "RIGHT"
-        self._attack_state = {"right": 0, "left": 0}
-        self._move_states = {"right": 0, "left": 0}
-        self.rect = Rect(self.px, self.py, 0, 0)
+        self.states = {
+              "stand_still": self.stand_still,
+              "move": self.move,
+              "jump": self.jump,
+              "get_down": self.get_down,
+              "attack": self.attack,
+        }
+
+        self.fsm = Fsm(active_state="stand_still", states=self.states)
+        self.images = {}
         self._base_image_path = "src/sprites/"
-        self.image_name = image_name
-        self.image = self._scale_2x(pygame.image.load(self._base_image_path + image_name + "_right_0.png"))
+        self._load_state_images()
+        self.rect = Rect(self.px, self.py, 0, 0)
+        self.image = self.images[self.fsm.get_state()][0]
         self.convert_image()
         pygame.draw.rect(self.image, BLACK, self)
 
-    def _scale_2x(self, surface):
-    	return pygame.transform.scale2x(surface)
+    def _load_state_images(self):
+        base_image_path = self._base_image_path
+        images = config.load_game_config_file("src/characters.yaml")
+        hero_images = images["hero_images"]
+        for state in self.states:
+            self.images[state] = [Characters._load_scale_2x(base_image_path + image) for image in hero_images[state]]
+
+    @classmethod
+    def _load_scale_2x(cls, image):
+        return pygame.transform.scale2x(pygame.image.load(image))
+
+    def _load_image_in_actual_side(self, index):
+        state = self.fsm.get_state()
+        if self.fsm.side == "left":
+            self.image = pygame.transform.flip(self.images[state][index], True, False)
+        else:
+            self.image = self.images[state][index]
+
+    def stand_still(self):
+        self._load_image_in_actual_side(0)
+        self.convert_image()
+
 
     def jump(self):
         self.yVel = -15
         self.jumping = True
 
     def get_down(self):
-    	pass
+        pass
 
     def is_jumping(self, gravity):
         return
-        if self.jumping:
-            print self.py
-
-            self.yVel += gravity
-            self.py += self.yVel
-            self.rect.move_ip(self.px, self.py)
-            if self.yVel < 0:
-                self.py -= self.yVel
-                if self.py > 50:
-                    self.py = 0
-                    self.jumping = False
-
-    def move(self, side):
-        '''
-        move the character
-        '''
-        self.actual_side = side
-        self._move_states[side] += 1
-        image = "%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, self._move_states[side])
-
-        self.image = self._scale_2x(pygame.image.load(image))
-
-        time.sleep(0.075)
-        self._change_state(side)
+        # if self.jumping:
+        #     print self.py
+        #
+        #     self.yVel += gravity
+        #     self.py += self.yVel
+        #     self.rect.move_ip(self.px, self.py)
+        #     if self.yVel < 0:
+        #         self.py -= self.yVel
+        #         if self.py > 50:
+        #             self.py = 0
+        #             self.jumping = False
 
     def attack(self):
-    	self.attacking = True
-
-    def animate_attack(self):
-    	self._attack_state[self.actual_side] +=1
-    	image = "%s%s_attack_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, self._attack_state[self.actual_side])
-    	self.image = self._scale_2x(pygame.image.load(image))
-    	self.convert_image()
-    	if self._attack_state[self.actual_side] == 5:
-    		self._attack_state[self.actual_side] = 0
-    		self.attacking = False
-    		self.image = self._scale_2x(pygame.image.load("%s%s_%s_%s.png" %(self._base_image_path, self.image_name, self.actual_side, 0)))
-    		self.convert_image()
-
-    def _change_state(self, side):
-        '''
-        change the position of the character in the screen
-        '''
+        attack_count = self.fsm.attack_count
+        self._load_image_in_actual_side(attack_count)
+        if attack_count == 4:
+            self.fsm.attack_count = 0
+            self.fsm.set_state("stand_still")
+        else:
+            self.fsm.attack_count +=1
         self.convert_image()
-        if side == 'left':
-            x, y = -10, 0
-        if side == 'right':
-            x, y = 10, 0
-        self.rect.move_ip(x, y)
-        self.px += x
-        self.py += y
 
-        self._move_states[side] += 1
-        if self._move_states[side] == 8:
-            self._move_states[side] = 0
+    def move(self):
+        side_moves = self.fsm.moves_count
+        self._load_image_in_actual_side(side_moves)
+        if self.fsm.side  == 'left':
+            self.rect.move_ip(-10, 0)
+        else:
+            self.rect.move_ip(10, 0)
+        self.convert_image()
+        time.sleep(0.075)
 
     def convert_image(self):
         '''
@@ -108,5 +110,5 @@ class Characters(Sprite):
 
 class Hero(Characters):
 
-	def __init__(self, *args, **kwargs):
-		super(Hero, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super(Hero, self).__init__(*args, **kwargs)

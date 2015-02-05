@@ -14,13 +14,13 @@ from pygame.sprite import RenderUpdates
 __all__ = ["set_config"]
 
 
-def _load_game_config_file(file_name):
-	with open(file_name, "r") as game_config:
-		return yaml.load(game_config)
+def load_game_config_file(file_name):
+    with open(file_name, "r") as game_config:
+        return yaml.load(game_config)
 
 
 def _init():
-	return _load_game_config_file("src/game_config.yml")
+    return load_game_config_file("src/game_config.yml")
 
 
 def set_config():
