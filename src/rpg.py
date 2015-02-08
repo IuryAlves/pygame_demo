@@ -9,25 +9,32 @@ from text import Text
 from colors import *
 from pygame.sprite import Sprite, RenderUpdates
 from pygame.constants import *
-
+from pytmx import TiledObjectGroup
 gravity = 1.2
 
 def main():
-    level, screen, clock, fps = set_config()
+    level, screen, clock, fps, rect = set_and_get_config()
     group = RenderUpdates()
-    heroine = Hero(20, 140, group)
+    heroine = Hero(30, 30, group)
 
     keys = {K_LEFT: False, K_RIGHT: False, K_UP: False, K_DOWN: False,
               K_RETURN: False, 27: False, K_a: False}  # obs 27 = 'esc'
 
     pygame.display.flip()
+    printou = False
     while True:
         clock.tick(fps)
-
+        #print heroine.rect.x
         for e in pygame.event.get([KEYUP, KEYDOWN]):
             valor = (e.type == KEYDOWN)
             if e.key in keys.keys():
                 keys[e.key] = valor
+        for layer in level.layers:
+        	if isinstance(layer, TiledObjectGroup):
+		        for obj in layer:
+		        	if heroine.rect.colliderect(rect):
+		        		print "colidiu"
+        		#heroine.fsm.set_state("move")
 
         if keys[27]:  # tecla ESC
             pygame.quit()

@@ -18,7 +18,7 @@ class Characters(Sprite):
         Sprite.__init__(self, *groups)
         self.px = start_px
         self.py = start_py
-        self.yVel = -15
+        self.yVel = 0
         self.states = {
               "stand_still": self.stand_still,
               "move": self.move,
@@ -31,10 +31,9 @@ class Characters(Sprite):
         self.images = {}
         self._base_image_path = "src/sprites/"
         self._load_state_images()
-        self.rect = Rect(self.px, self.py, 0, 0)
         self.image = self.images[self.fsm.get_state()][0]
         self.convert_image()
-        pygame.draw.rect(self.image, BLACK, self)
+        self.rect = self.image.get_rect()
 
     def _load_state_images(self):
         base_image_path = self._base_image_path
@@ -57,16 +56,18 @@ class Characters(Sprite):
     def stand_still(self):
         self._load_image_in_actual_side(0)
         self.convert_image()
-
+        # self.py += self.yVel
+        # self.yVel += 1.2
+        # self.rect.move_ip(0, self.py)
 
     def jump(self):
         self.yVel += 1.2
         print self.yVel
-        self.py -= self.yVel
         self.rect.move_ip(0, self.yVel)
         self.convert_image()
-        #self.fsm.set_state("stand_still")
-        #if self.yVel < 0:
+        if self.yVel > 14:
+        	self.fsm.set_state("stand_still")
+        	self.yVel = -12
         #         self.py -= self.yVel
         #         if self.py > 50:
         #             self.py = 0
@@ -90,8 +91,10 @@ class Characters(Sprite):
         self._load_image_in_actual_side(side_moves)
         if self.fsm.side  == 'left':
             self.rect.move_ip(-10, 0)
+            self.px -= 10
         else:
             self.rect.move_ip(10, 0)
+            self.px += 10
         self.convert_image()
         time.sleep(0.075)
 
