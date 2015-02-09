@@ -5,12 +5,10 @@ import pygame
 import utils
 from config import set_config
 from characters import Hero
-from text import Text
 from colors import *
-from pygame.sprite import Sprite, RenderUpdates
+from pygame.sprite import RenderUpdates
 from pygame.constants import *
-from pytmx import TiledObjectGroup
-gravity = 1.2
+
 
 def main():
     level, screen, clock, fps, rect_list = set_config()
@@ -18,7 +16,7 @@ def main():
     heroine = Hero(30, 30, group)
 
     keys = {K_LEFT: False, K_RIGHT: False, K_UP: False, K_DOWN: False,
-              K_RETURN: False, 27: False, K_a: False}  # obs 27 = 'esc'
+            K_RETURN: False, 27: False, K_a: False}  # obs 27 = 'esc'
 
     pygame.display.flip()
 
@@ -29,7 +27,7 @@ def main():
             if e.key in keys.keys():
                 keys[e.key] = valor
 
-        idx =  heroine.rect.collidelist(rect_list)
+        idx = heroine.rect.collidelist(rect_list)
         if idx != -1:
             if heroine.fsm.get_state() == 'fall':
                 heroine.fsm.set_state("stand_still")
@@ -45,7 +43,7 @@ def main():
         elif keys[K_LEFT] and heroine.cannot_move_to != "left":
             heroine.fsm.set_state("move")
             heroine.fsm.update("left")
-        elif keys[K_RIGHT] and  heroine.cannot_move_to != "right":
+        elif keys[K_RIGHT] and heroine.cannot_move_to != "right":
             print "aqui"
             heroine.fsm.set_state("move")
             heroine.fsm.update("right")
@@ -61,4 +59,4 @@ def main():
 
 
 if __name__ == '__main__':
-	main()
+    main()

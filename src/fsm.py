@@ -5,10 +5,10 @@ class Fsm(object):
 
     def __init__(self, active_state, states=None):
         self.moves_count = 0
-        self.side  = "right"
+        self.side = "right"
         self.attack_count = 0
         self.states = states
-        self.active_state  = active_state
+        self.active_state = active_state
 
     def set_state(self, state):
         self.active_state = state

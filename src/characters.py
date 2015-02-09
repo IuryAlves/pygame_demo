@@ -10,6 +10,7 @@ from colors import *
 
 
 class Characters(Sprite):
+
     """"
     Base class for all characters of the game
     """
@@ -20,12 +21,12 @@ class Characters(Sprite):
         self.py = start_py
         self.yVel = 0
         self.states = {
-              "stand_still": self.stand_still,
-              "move": self.move,
-              "jump": self.jump,
-              "get_down": self.get_down,
-              "attack": self.attack,
-              "fall": self.fall
+            "stand_still": self.stand_still,
+            "move": self.move,
+            "jump": self.jump,
+            "get_down": self.get_down,
+            "attack": self.attack,
+            "fall": self.fall
         }
 
         self.fsm = Fsm(active_state="fall", states=self.states)
@@ -42,7 +43,8 @@ class Characters(Sprite):
         images = config.load_game_config_file("src/characters.yaml")
         hero_images = images["hero_state_images"]
         for state in self.states:
-            self.images[state] = [Characters._load_scale_2x(base_image_path + image) for image in hero_images[state]]
+            self.images[state] = [Characters._load_scale_2x(
+                base_image_path + image) for image in hero_images[state]]
 
     @classmethod
     def _load_scale_2x(cls, image):
@@ -51,7 +53,8 @@ class Characters(Sprite):
     def _load_image_in_actual_side(self, index):
         state = self.fsm.get_state()
         if self.fsm.side == "left":
-            self.image = pygame.transform.flip(self.images[state][index], True, False)
+            self.image = pygame.transform.flip(
+                self.images[state][index], True, False)
         else:
             self.image = self.images[state][index]
 
@@ -80,7 +83,6 @@ class Characters(Sprite):
     def get_down(self):
         raise NotImplementedError
 
-
     def attack(self):
         attack_count = self.fsm.attack_count
         self._load_image_in_actual_side(attack_count)
@@ -88,13 +90,13 @@ class Characters(Sprite):
             self.fsm.attack_count = 0
             self.fsm.set_state("stand_still")
         else:
-            self.fsm.attack_count +=1
+            self.fsm.attack_count += 1
         self.convert_image()
 
     def move(self):
         side_moves = self.fsm.moves_count
         self._load_image_in_actual_side(side_moves)
-        if self.fsm.side  == 'left':
+        if self.fsm.side == 'left':
             self.rect.move_ip(-10, 0)
             self.px -= 10
         else:
@@ -110,6 +112,7 @@ class Characters(Sprite):
         self.image.set_alpha(None, RLEACCEL)
         self.image.convert()
         self.image.set_colorkey(MAGENTA, RLEACCEL)
+
 
 class Hero(Characters):
 

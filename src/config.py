@@ -5,7 +5,6 @@ import yaml
 import pytmx
 import utils
 from pygame.locals import *
-from pygame.sprite import RenderUpdates
 
 #
 # Module that contains the configuration of the game
@@ -34,14 +33,16 @@ def set_config():
     pygame.init()
     game_config = _get_game_config_file()
 
-    screen = pygame.display.set_mode((game_config["screen_size_x"], game_config["screen_size_y"]))
+    screen = pygame.display.set_mode(
+        (game_config["screen_size_x"], game_config["screen_size_y"]))
     pygame.display.set_caption(game_config["name"])
     clock = pygame.time.Clock()
     level = pytmx.load_pygame(game_config["initial_game_level"])
 
-    objects_layer = filter(lambda layer: isinstance(layer, pytmx.TiledObjectGroup), level.layers).pop()
+    objects_layer = filter(
+        lambda layer:
+            isinstance(layer, pytmx.TiledObjectGroup), level.layers).pop()
     rect_list = create_rects_from_tile_objects(objects_layer)
 
-    #import pdb; pdb.set_trace()
     utils.clear_screen(level, screen)
     return level, screen, clock, game_config["fps"], rect_list
