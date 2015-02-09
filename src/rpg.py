@@ -13,7 +13,7 @@ from pytmx import TiledObjectGroup
 gravity = 1.2
 
 def main():
-    level, screen, clock, fps, rect = set_and_get_config()
+    level, screen, clock, fps, rect_list = set_config()
     group = RenderUpdates()
     heroine = Hero(30, 30, group)
 
@@ -21,28 +21,32 @@ def main():
               K_RETURN: False, 27: False, K_a: False}  # obs 27 = 'esc'
 
     pygame.display.flip()
-    printou = False
+
     while True:
         clock.tick(fps)
-        #print heroine.rect.x
         for e in pygame.event.get([KEYUP, KEYDOWN]):
             valor = (e.type == KEYDOWN)
             if e.key in keys.keys():
                 keys[e.key] = valor
-        for layer in level.layers:
-        	if isinstance(layer, TiledObjectGroup):
-		        for obj in layer:
-		        	if heroine.rect.colliderect(rect):
-		        		print "colidiu"
-        		#heroine.fsm.set_state("move")
+
+        idx =  heroine.rect.collidelist(rect_list)
+        if idx != -1:
+            if heroine.fsm.get_state() == 'fall':
+                heroine.fsm.set_state("stand_still")
+
+            else:
+                heroine.cannot_move_to = heroine.fsm.side
+        else:
+            heroine.cannot_move_to = None
 
         if keys[27]:  # tecla ESC
             pygame.quit()
             sys.exit()
-        elif keys[K_LEFT]:
+        elif keys[K_LEFT] and heroine.cannot_move_to != "left":
             heroine.fsm.set_state("move")
             heroine.fsm.update("left")
-        elif keys[K_RIGHT]:
+        elif keys[K_RIGHT] and  heroine.cannot_move_to != "right":
+            print "aqui"
             heroine.fsm.set_state("move")
             heroine.fsm.update("right")
         elif keys[K_UP]:

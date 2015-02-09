@@ -1,4 +1,4 @@
-hero_images:
+hero_state_images:
   attack:
     - attack_0.png
     - attack_1.png
@@ -24,3 +24,6 @@ hero_images:
     - stand_still.png
   get_down:
     - jump_1.png
+  fall:
+    - fall1.png
+    - fall2.png

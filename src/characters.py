@@ -25,9 +25,11 @@ class Characters(Sprite):
               "jump": self.jump,
               "get_down": self.get_down,
               "attack": self.attack,
+              "fall": self.fall
         }
 
-        self.fsm = Fsm(active_state="stand_still", states=self.states)
+        self.fsm = Fsm(active_state="fall", states=self.states)
+        self.cannot_move_to = None
         self.images = {}
         self._base_image_path = "src/sprites/"
         self._load_state_images()
@@ -38,7 +40,7 @@ class Characters(Sprite):
     def _load_state_images(self):
         base_image_path = self._base_image_path
         images = config.load_game_config_file("src/characters.yaml")
-        hero_images = images["hero_images"]
+        hero_images = images["hero_state_images"]
         for state in self.states:
             self.images[state] = [Characters._load_scale_2x(base_image_path + image) for image in hero_images[state]]
 
@@ -56,21 +58,24 @@ class Characters(Sprite):
     def stand_still(self):
         self._load_image_in_actual_side(0)
         self.convert_image()
-        # self.py += self.yVel
-        # self.yVel += 1.2
-        # self.rect.move_ip(0, self.py)
 
     def jump(self):
-        self.yVel += 1.2
-        print self.yVel
-        self.rect.move_ip(0, self.yVel)
-        self.convert_image()
-        if self.yVel > 14:
-        	self.fsm.set_state("stand_still")
-        	self.yVel = -12
+        raise NotImplementedError
+        # self.yVel += 1.2
+        # print self.yVel
+        # self.rect.move_ip(0, self.yVel)
+        # self.convert_image()
+        # if self.yVel > 14:
+        #     self.fsm.set_state("stand_still")
+        #     self.yVel = -12
         #         self.py -= self.yVel
         #         if self.py > 50:
         #             self.py = 0
+
+    def fall(self):
+        self.py += self.yVel
+        self.yVel += 1.2
+        self.rect.move_ip(0, self.py)
 
     def get_down(self):
         raise NotImplementedError
