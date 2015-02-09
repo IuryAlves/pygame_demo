@@ -22,16 +22,15 @@ def main():
 
     while True:
         clock.tick(fps)
-        for e in pygame.event.get([KEYUP, KEYDOWN]):
-            valor = (e.type == KEYDOWN)
-            if e.key in keys.keys():
-                keys[e.key] = valor
+        for event in pygame.event.get([KEYDOWN]):
+            value = (event.type == KEYDOWN)
+            if event.key in keys:
+                keys[event.key] = value
 
         idx = heroine.rect.collidelist(rect_list)
         if idx != -1:
             if heroine.fsm.get_state() == 'fall':
                 heroine.fsm.set_state("stand_still")
-
             else:
                 heroine.cannot_move_to = heroine.fsm.side
         else:
@@ -44,7 +43,6 @@ def main():
             heroine.fsm.set_state("move")
             heroine.fsm.update("left")
         elif keys[K_RIGHT] and heroine.cannot_move_to != "right":
-            print "aqui"
             heroine.fsm.set_state("move")
             heroine.fsm.update("right")
         elif keys[K_UP]:
@@ -56,7 +54,6 @@ def main():
         heroine.fsm.auto_update()
         utils.clear_screen(level, screen)
         pygame.display.update(group.draw(screen))
-
 
 if __name__ == '__main__':
     main()
