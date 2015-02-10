@@ -11,6 +11,7 @@ from pygame.constants import *
 
 
 def main():
+    colided_list = []
     level, screen, clock, fps, rect_list = set_config()
     group = RenderUpdates()
     heroine = Hero(30, 30, group)
@@ -22,19 +23,23 @@ def main():
 
     while True:
         clock.tick(fps)
-        for event in pygame.event.get([KEYDOWN]):
+        for event in pygame.event.get([KEYUP, KEYDOWN]):
             value = (event.type == KEYDOWN)
             if event.key in keys:
                 keys[event.key] = value
 
         idx = heroine.rect.collidelist(rect_list)
-        if idx != -1:
-            if heroine.fsm.get_state() == 'fall':
+        if idx != -1 and rect_list[idx] not in colided_list:
+            colided_list.append(rect_list[idx])
+
+            if rect_list[idx].x == heroine.rect.x:
                 heroine.fsm.set_state("stand_still")
+                heroine.cannot_move_to = None
+                #import pdb; pdb.set_trace()
             else:
                 heroine.cannot_move_to = heroine.fsm.side
-        else:
-            heroine.cannot_move_to = None
+        if idx == -1:
+            heroine.fsm.set_state("fall")
 
         if keys[27]:  # tecla ESC
             pygame.quit()
@@ -52,6 +57,7 @@ def main():
         elif keys[K_a]:
             heroine.fsm.set_state("attack")
         heroine.fsm.auto_update()
+        print heroine.fsm.get_state()
         utils.clear_screen(level, screen)
         pygame.display.update(group.draw(screen))
 
