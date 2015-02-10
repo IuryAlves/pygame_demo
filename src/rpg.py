@@ -31,8 +31,8 @@ def main():
         idx = heroine.rect.collidelist(rect_list)
         if idx != -1 and rect_list[idx] not in colided_list:
             colided_list.append(rect_list[idx])
-
-            if rect_list[idx].x == heroine.rect.x:
+            print rect_list[idx]
+            if rect_list[idx].x <= heroine.rect.x and heroine.rect.x <= rect_list[idx].width:
                 heroine.fsm.set_state("stand_still")
                 heroine.cannot_move_to = None
                 #import pdb; pdb.set_trace()
@@ -57,7 +57,6 @@ def main():
         elif keys[K_a]:
             heroine.fsm.set_state("attack")
         heroine.fsm.auto_update()
-        print heroine.fsm.get_state()
         utils.clear_screen(level, screen)
         pygame.display.update(group.draw(screen))
 
