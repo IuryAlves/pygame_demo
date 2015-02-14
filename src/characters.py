@@ -63,17 +63,19 @@ class Characters(Sprite):
         self.convert_image()
 
     def jump(self):
-        self.yVel += 1.2
-        print self.yVel
-        self.rect.move_ip(0, self.yVel)
-        self.convert_image()
-        if self.yVel > 14:
-            self.fsm.set_state("stand_still")
+    		# self.yVel -= 1.2
+    		self.py += 1.2
+    		print self.py
+    		self.rect.move_ip(0, int(self.py))
+    		self.convert_image()
+    		# if self.yVel < -10:
+    		# 	self.fsm.set_state("fall")
 
     def fall(self):
-        self.py += self.yVel
-        self.yVel += 1.2
-        self.rect.move_ip(0, self.py)
+    	return
+    	self.py += self.yVel
+    	self.yVel += 1.2
+    	self.rect.move_ip(0, self.py)
 
     def get_down(self):
         raise NotImplementedError

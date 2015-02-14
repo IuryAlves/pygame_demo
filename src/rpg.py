@@ -14,7 +14,7 @@ def main():
     colided_list = []
     level, screen, clock, fps, rect_list = set_config()
     group = RenderUpdates()
-    heroine = Hero(30, 30, group)
+    heroine = Hero(100, 30, group)
 
     keys = {K_LEFT: False, K_RIGHT: False, K_UP: False, K_DOWN: False,
             K_RETURN: False, 27: False, K_a: False}  # obs 27 = 'esc'
